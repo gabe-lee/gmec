@@ -4,8 +4,6 @@ version = "0.0.1"
 edition = "2021"
 license = "BSD-3-Clause"
 description = "Gabe's Monolithic Everything Crate - A library for all your (my) general-purpose needs"
-homepage = ""
-documentation = ""
 repository = "https://github.com/gabe-lee/gmec.git"
 
 [dependencies]
