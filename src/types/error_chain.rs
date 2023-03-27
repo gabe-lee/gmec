@@ -5,16 +5,16 @@ use std::fmt::Debug;
 use core::convert::Infallible;
 
 pub trait ErrorPropogation<T, E> {
-    fn return_on_error<C>(self, context: C) -> Result<T, ErrorChain>
+    fn on_error<C>(self, context: C) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static;
 
-    fn do_then_return_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
+    fn do_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static, F: FnOnce() -> C;
 }
 
 impl<T, E> ErrorPropogation<T, E> for Result<T, E>
 where E: Error + Send + Sync + 'static {
-    fn return_on_error<C>(self, context: C) -> Result<T, ErrorChain>
+    fn on_error<C>(self, context: C) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static {
         match self {
             Ok(val) => Ok(val),
@@ -22,7 +22,7 @@ where E: Error + Send + Sync + 'static {
         }
     }
 
-    fn do_then_return_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
+    fn do_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static, F: FnOnce() -> C {
         match self {
             Ok(val) => Ok(val),
@@ -32,7 +32,7 @@ where E: Error + Send + Sync + 'static {
 }
 
 impl<T> ErrorPropogation<T, Infallible> for Option<T> {
-    fn return_on_error<C>(self, context: C) -> Result<T, ErrorChain>
+    fn on_error<C>(self, context: C) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static {
         match self {
             Some(val) => Ok(val),
@@ -40,7 +40,7 @@ impl<T> ErrorPropogation<T, Infallible> for Option<T> {
         }
     }
 
-    fn do_then_return_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
+    fn do_on_error<C, F>(self, context_func: F) -> Result<T, ErrorChain>
     where C: Display + Send + Sync + 'static, F: FnOnce() -> C {
         match self {
             Some(val) => Ok(val),
